@@ -4,7 +4,10 @@ namespace GymFitnessGuide.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<User> CreateUserAsync(string name, string email);
-        Task<User?> GetUserByEmailAsync(string email);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<User?> GetUserByIdAsync(int id);
+        Task<User> CreateUserAsync(User user);
+        Task<User?> UpdateUserAsync(int id, User updatedUser);
+        Task<bool> DisableUserAsync(int id);
     }
 }

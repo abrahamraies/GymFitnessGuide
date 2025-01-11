@@ -9,22 +9,49 @@ namespace GymFitnessGuide.Application.Services
     {
         private readonly AppDbContext _dbContext = dbContext;
 
-        public async Task<User> CreateUserAsync(string name, string email)
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            var user = new User
-            {
-                Name = name,
-                Email = email
-            };
+            return await _dbContext.Users.ToListAsync();
+        }
 
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            return await _dbContext.Users.FindAsync(id);
+        }
+
+        public async Task<User> CreateUserAsync(User user)
+        {
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
             return user;
         }
 
-        public async Task<User?> GetUserByEmailAsync(string email)
+        public async Task<User?> UpdateUserAsync(int id, User updatedUser)
         {
-            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var existingUser = await _dbContext.Users.FindAsync(id);
+            if (existingUser == null)
+            {
+                return null;
+            }
+
+            existingUser.Name = updatedUser.Name;
+            existingUser.Email = updatedUser.Email;
+
+            await _dbContext.SaveChangesAsync();
+            return existingUser;
+        }
+
+        public async Task<bool> DisableUserAsync(int id)
+        {
+            var user = await _dbContext.Users.FindAsync(id);
+            if (user == null || !user.IsEnabled)
+            {
+                return false;
+            }
+
+            user.IsEnabled = false;
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

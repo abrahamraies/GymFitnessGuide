@@ -1,28 +1,51 @@
 ﻿using GymFitnessGuide.Application.Interfaces;
+using GymFitnessGuide.Infrastructure.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymFitnessGuide.API.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class UserController(IUserService userService) : ControllerBase
     {
         private readonly IUserService _userService = userService;
 
-        [HttpPost]
-        public async Task<IActionResult> CreateUserAsync(string name, string email)
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
         {
-            var user = await _userService.CreateUserAsync(name, email);
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user == null) return NotFound();
             return Ok(user);
         }
 
-        [HttpGet("{email}")]
-        public async Task<IActionResult> GetUserByEmailAsync(string email)
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] User user)
         {
-            var user = await _userService.GetUserByEmailAsync(email);
-            if (!string.IsNullOrWhiteSpace(user?.Name))
-                return NotFound();
-            return Ok(user);
+            var createdUser = await _userService.CreateUserAsync(user);
+            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
+        {
+            var updatedUser = await _userService.UpdateUserAsync(id, user);
+            if (updatedUser == null) return NotFound();
+            return Ok(updatedUser);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var result = await _userService.DisableUserAsync(id);
+            if (!result) return NotFound();
+            return NoContent();
         }
     }
 }
