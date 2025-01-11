@@ -1,13 +1,14 @@
-﻿using GymFitnessGuide.Infrastructure.Entities;
+﻿using GymFitnessGuide.Application.DTOs.User;
+using GymFitnessGuide.Infrastructure.Entities;
 
 namespace GymFitnessGuide.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> GetAllUsersAsync();
-        Task<User?> GetUserByIdAsync(int id);
-        Task<User> CreateUserAsync(User user);
-        Task<User?> UpdateUserAsync(int id, User updatedUser);
+        Task<IEnumerable<UserDto>> GetAllUsersAsync();
+        Task<UserDto?> GetUserByIdAsync(int id);
+        Task<bool> CreateUserAsync(CreateUserDto createUserDto);
+        Task<bool> UpdateUserAsync(int id, UpdateUserDto updateUserDto);
         Task<bool> DisableUserAsync(int id);
     }
 }

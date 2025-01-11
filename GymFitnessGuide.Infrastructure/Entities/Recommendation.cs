@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public string Resource { get; set; } = string.Empty;
 
-        public int ProfileId { get; set; }
-        public Profile Profile { get; set; } = null!;
+        public int CategoryId { get; set; }
+        public Category Category { get; set; } = null!;
     }
 }

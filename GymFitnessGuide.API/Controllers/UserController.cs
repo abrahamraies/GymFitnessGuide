@@ -1,5 +1,5 @@
-﻿using GymFitnessGuide.Application.Interfaces;
-using GymFitnessGuide.Infrastructure.Entities;
+﻿using GymFitnessGuide.Application.DTOs.User;
+using GymFitnessGuide.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymFitnessGuide.API.Controllers
@@ -26,17 +26,17 @@ namespace GymFitnessGuide.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto user)
         {
             var createdUser = await _userService.CreateUserAsync(user);
-            return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+            return CreatedAtAction(nameof(GetUserById), createdUser);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] User user)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto user)
         {
             var updatedUser = await _userService.UpdateUserAsync(id, user);
-            if (updatedUser == null) return NotFound();
+            if (updatedUser) return NotFound();
             return Ok(updatedUser);
         }
 

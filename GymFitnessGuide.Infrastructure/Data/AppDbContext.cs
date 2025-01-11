@@ -6,27 +6,27 @@ namespace GymFitnessGuide.Infrastructure.Data
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
         public DbSet<User> Users { get; set; } = null!;
-        public DbSet<Profile> Profiles { get; set; } = null!;
-        public DbSet<UserProfile> UserProfiles { get; set; } = null!;
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<UserCategory> UserCategories { get; set; } = null!;
         public DbSet<TestQuestion> TestQuestions { get; set; } = null!;
         public DbSet<TestAnswer> TestAnswers { get; set; } = null!;
         public DbSet<Recommendation> Recommendations { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Many-to-Many Users and Profiles
-            modelBuilder.Entity<UserProfile>()
-                .HasKey(up => new { up.UserId, up.ProfileId });
+            // Many-to-Many Users and Categories
+            modelBuilder.Entity<UserCategory>()
+                .HasKey(up => new { up.UserId, up.CategoryId });
 
-            modelBuilder.Entity<UserProfile>()
+            modelBuilder.Entity<UserCategory>()
                 .HasOne(up => up.User)
-                .WithMany(u => u.UserProfiles)
+                .WithMany(u => u.UserCategories)
                 .HasForeignKey(up => up.UserId);
 
-            modelBuilder.Entity<UserProfile>()
-                .HasOne(up => up.Profile)
-                .WithMany(p => p.UserProfiles)
-                .HasForeignKey(up => up.ProfileId);
+            modelBuilder.Entity<UserCategory>()
+                .HasOne(up => up.Category)
+                .WithMany(p => p.UserCategories)
+                .HasForeignKey(up => up.CategoryId);
 
             // One-to-Many TestQuestion and TestAnswer
             modelBuilder.Entity<TestAnswer>()
@@ -40,11 +40,11 @@ namespace GymFitnessGuide.Infrastructure.Data
                 .WithMany(u => u.TestAnswers)
                 .HasForeignKey(ta => ta.UserId);
 
-            // One-to-Many Profile and Recommendation
+            // One-to-Many Category and Recommendation
             modelBuilder.Entity<Recommendation>()
-                .HasOne(r => r.Profile)
+                .HasOne(r => r.Category)
                 .WithMany(p => p.Recommendations)
-                .HasForeignKey(r => r.ProfileId);
+                .HasForeignKey(r => r.CategoryId);
 
             base.OnModelCreating(modelBuilder);
         }

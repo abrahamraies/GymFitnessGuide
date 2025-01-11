@@ -1,57 +1,50 @@
-﻿using GymFitnessGuide.Application.Interfaces;
-using GymFitnessGuide.Infrastructure.Data;
+﻿using AutoMapper;
+using GymFitnessGuide.Application.DTOs.User;
+using GymFitnessGuide.Application.Interfaces;
 using GymFitnessGuide.Infrastructure.Entities;
-using Microsoft.EntityFrameworkCore;
+using GymFitnessGuide.Infrastructure.Repositories.Interfaces;
 
 namespace GymFitnessGuide.Application.Services
 {
-    public class UserService(AppDbContext dbContext) : IUserService
+    public class UserService(IUserRepository userRepository, IMapper mapper) : IUserService
     {
-        private readonly AppDbContext _dbContext = dbContext;
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IMapper _mapper = mapper;
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
-            return await _dbContext.Users.ToListAsync();
+            var users = await _userRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
-        public async Task<User?> GetUserByIdAsync(int id)
+        public async Task<UserDto?> GetUserByIdAsync(int id)
         {
-            return await _dbContext.Users.FindAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
+            return _mapper.Map<UserDto>(user);
         }
 
-        public async Task<User> CreateUserAsync(User user)
+        public async Task<bool> CreateUserAsync(CreateUserDto createUserDto)
         {
-            _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
-            return user;
+            var user = _mapper.Map<User>(createUserDto);
+            return await _userRepository.AddAsync(user);
         }
 
-        public async Task<User?> UpdateUserAsync(int id, User updatedUser)
+        public async Task<bool> UpdateUserAsync(int id, UpdateUserDto updateUserDto)
         {
-            var existingUser = await _dbContext.Users.FindAsync(id);
-            if (existingUser == null)
-            {
-                return null;
-            }
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null) return false;
 
-            existingUser.Name = updatedUser.Name;
-            existingUser.Email = updatedUser.Email;
-
-            await _dbContext.SaveChangesAsync();
-            return existingUser;
+            _mapper.Map(updateUserDto, user);
+            return await _userRepository.UpdateAsync(user);
         }
 
         public async Task<bool> DisableUserAsync(int id)
         {
-            var user = await _dbContext.Users.FindAsync(id);
-            if (user == null || !user.IsEnabled)
-            {
-                return false;
-            }
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null) return false;
 
             user.IsEnabled = false;
-            await _dbContext.SaveChangesAsync();
-            return true;
+            return await _userRepository.UpdateAsync(user);
         }
     }
 }
