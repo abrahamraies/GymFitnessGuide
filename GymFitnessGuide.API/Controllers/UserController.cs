@@ -26,14 +26,14 @@ namespace GymFitnessGuide.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto user)
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto newUser)
         {
-            var createdUser = await _userService.CreateUserAsync(user);
+            var createdUser = await _userService.CreateUserAsync(newUser);
             return CreatedAtAction(nameof(GetUserById), createdUser);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto user)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUpdateDto user)
         {
             var updatedUser = await _userService.UpdateUserAsync(id, user);
             if (updatedUser) return NotFound();

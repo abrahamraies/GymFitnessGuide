@@ -23,13 +23,13 @@ namespace GymFitnessGuide.Application.Services
             return _mapper.Map<UserDto>(user);
         }
 
-        public async Task<bool> CreateUserAsync(CreateUserDto createUserDto)
+        public async Task<bool> CreateUserAsync(UserCreateDto createUserDto)
         {
             var user = _mapper.Map<User>(createUserDto);
             return await _userRepository.AddAsync(user);
         }
 
-        public async Task<bool> UpdateUserAsync(int id, UpdateUserDto updateUserDto)
+        public async Task<bool> UpdateUserAsync(int id, UserUpdateDto updateUserDto)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null) return false;

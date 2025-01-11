@@ -1,6 +1,6 @@
 ﻿namespace GymFitnessGuide.Application.DTOs.TestAnswer
 {
-    public class UpdateTestAnswerDto
+    public class TestAnswerCreateDto
     {
         public required string AnswerText { get; set; }
         public bool IsCorrect { get; set; }

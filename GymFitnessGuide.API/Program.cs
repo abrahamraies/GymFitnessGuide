@@ -33,27 +33,8 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
 
-// AutoMapper - Crear una carpeta y configurarlo.
-var config = new MapperConfiguration(cfg =>
-{
-    cfg.CreateMap<User, CreateUserDto>();
-    cfg.CreateMap<User, UpdateUserDto>();
-    cfg.CreateMap<User, UserDto>();
-
-    cfg.CreateMap<TestQuestion, CreateTestQuestionDto>();
-    cfg.CreateMap<User, TestQuestionDto>();
-    cfg.CreateMap<User, UpdateTestQuestionDto>();
-
-    cfg.CreateMap<TestAnswer, CreateTestAnswerDto>();
-    cfg.CreateMap<TestAnswer, TestAnswerDto>();
-    cfg.CreateMap<TestAnswer, UpdateTestAnswerDto>();
-
-    cfg.CreateMap<Category, CategoryDto>();
-    cfg.CreateMap<Category, CreateCategoryDto>();
-    cfg.CreateMap<Category, UpdateCategoryDto>();
-});
-
-builder.Services.AddAutoMapper(typeof(Program));
+// AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers();
 

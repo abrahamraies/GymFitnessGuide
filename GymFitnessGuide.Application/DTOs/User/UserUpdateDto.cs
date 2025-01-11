@@ -1,6 +1,6 @@
 ﻿namespace GymFitnessGuide.Application.DTOs.User
 {
-    public class UpdateUserDto
+    public class UserUpdateDto
     {
         public required string Email { get; set; }
         public required string Name { get; set; }

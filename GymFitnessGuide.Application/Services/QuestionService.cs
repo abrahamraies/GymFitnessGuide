@@ -23,13 +23,13 @@ namespace GymFitnessGuide.Application.Services
             return _mapper.Map<TestQuestionDto>(question);
         }
 
-        public async Task<bool> CreateTestQuestionAsync(CreateTestQuestionDto createTestQuestionDto)
+        public async Task<bool> CreateTestQuestionAsync(TestQuestionCreateDto createTestQuestionDto)
         {
             var question = _mapper.Map<TestQuestion>(createTestQuestionDto);
             return await _testQuestionRepository.AddAsync(question);
         }
 
-        public async Task<bool> UpdateTestQuestionAsync(int id, UpdateTestQuestionDto updateTestQuestionDto)
+        public async Task<bool> UpdateTestQuestionAsync(int id, TestQuestionUpdateDto updateTestQuestionDto)
         {
             var question = await _testQuestionRepository.GetByIdAsync(id);
             if (question == null) return false;

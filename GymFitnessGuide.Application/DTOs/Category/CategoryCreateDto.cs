@@ -1,6 +1,6 @@
 ﻿namespace GymFitnessGuide.Application.DTOs.Category
 {
-    public class CreateCategoryDto
+    public class CategoryCreateDto
     {
         public required string Name { get; set; }
     }

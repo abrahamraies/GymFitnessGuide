@@ -2,9 +2,9 @@
 
 namespace GymFitnessGuide.Application.DTOs.TestQuestion
 {
-    public class UpdateTestQuestionDto
+    public class TestQuestionCreateDto
     {
         public required string QuestionText { get; set; }
-        public List<UpdateTestAnswerDto> Answers { get; set; } = null!;
+        public List<TestAnswerCreateDto> Answers { get; set; } = null!;
     }
 }
