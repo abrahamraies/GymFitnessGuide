@@ -1,12 +1,6 @@
-using AutoMapper;
-using GymFitnessGuide.Application.DTOs.Category;
-using GymFitnessGuide.Application.DTOs.TestAnswer;
-using GymFitnessGuide.Application.DTOs.TestQuestion;
-using GymFitnessGuide.Application.DTOs.User;
 using GymFitnessGuide.Application.Interfaces;
 using GymFitnessGuide.Application.Services;
 using GymFitnessGuide.Infrastructure.Data;
-using GymFitnessGuide.Infrastructure.Entities;
 using GymFitnessGuide.Infrastructure.Repositories;
 using GymFitnessGuide.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -21,20 +15,31 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     ));
 
-// Services
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IQuestionService, QuestionService>();
-builder.Services.AddScoped<IAnswerService, AnswerService>();
-
 //Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IRecommendationRepository, RecommendationRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
 
+// Services
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IRecommendationService, RecommendationService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<IAnswerService, AnswerService>();
+
 // AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
 
 builder.Services.AddControllers();
 
@@ -55,5 +60,6 @@ app.UseHttpsRedirection();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseCors("AllowAll");
 app.MapControllers();
 app.Run();
