@@ -1,5 +1,6 @@
 ﻿using GymFitnessGuide.Application.DTOs.Recommendation;
 using GymFitnessGuide.Application.Interfaces;
+using GymFitnessGuide.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymFitnessGuide.API.Controllers
@@ -9,6 +10,13 @@ namespace GymFitnessGuide.API.Controllers
     public class RecommendationsController(IRecommendationService recommendationService) : ControllerBase
     {
         private readonly IRecommendationService _recommendationService = recommendationService;
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllRecommendations()
+        {
+            var recommendations = await _recommendationService.GetAllRecommendationsAsync();
+            return Ok(recommendations);
+        }
 
         [HttpGet("category/{categoryId}")]
         public async Task<IActionResult> GetByCategory(int categoryId)
@@ -26,19 +34,20 @@ namespace GymFitnessGuide.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRecommendation([FromBody] CreateRecommendationDto dto)
+        public async Task<IActionResult> AddRecommendation([FromBody] RecommendationCreateDto newRecommendation)
         {
-            await _recommendationService.AddRecommendationAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = dto.CategoryId }, dto);
+            var createdRecommendation = await _recommendationService.AddRecommendationAsync(newRecommendation);
+            return CreatedAtAction(nameof(GetById), new { id = createdRecommendation.Id }, createdRecommendation);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRecommendation(int id, [FromBody] UpdateRecommendationDto dto)
+        public async Task<IActionResult> UpdateRecommendation(int id, [FromBody] RecommendationUpdateDto recommendation)
         {
             try
             {
-                await _recommendationService.UpdateRecommendationAsync(id, dto);
-                return NoContent();
+                var updatedRecommendation = await _recommendationService.UpdateRecommendationAsync(id, recommendation);
+                if(updatedRecommendation) return NoContent();
+                return Ok(updatedRecommendation);
             }
             catch (KeyNotFoundException)
             {

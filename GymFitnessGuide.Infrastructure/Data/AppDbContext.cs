@@ -31,13 +31,6 @@ namespace GymFitnessGuide.Infrastructure.Data
                 .HasForeignKey(up => up.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // One-to-Many TestQuestion and TestAnswer
-            modelBuilder.Entity<TestAnswer>()
-                .HasOne(ta => ta.Question)
-                .WithMany(tq => tq.TestAnswers)
-                .HasForeignKey(ta => ta.QuestionId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             // One-to-Many Category and TestQuestion
             modelBuilder.Entity<TestQuestion>()
                 .HasOne(q => q.Category)

@@ -35,7 +35,7 @@ namespace GymFitnessGuide.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("GymFitnessGuide.Infrastructure.Entities.Recommendation", b =>
@@ -64,7 +64,7 @@ namespace GymFitnessGuide.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Recommendations");
+                    b.ToTable("Recommendations", (string)null);
                 });
 
             modelBuilder.Entity("GymFitnessGuide.Infrastructure.Entities.TestAnswer", b =>
@@ -91,7 +91,7 @@ namespace GymFitnessGuide.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TestAnswers");
+                    b.ToTable("TestAnswers", (string)null);
                 });
 
             modelBuilder.Entity("GymFitnessGuide.Infrastructure.Entities.TestQuestion", b =>
@@ -113,7 +113,7 @@ namespace GymFitnessGuide.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("TestQuestions");
+                    b.ToTable("TestQuestions", (string)null);
                 });
 
             modelBuilder.Entity("GymFitnessGuide.Infrastructure.Entities.User", b =>
@@ -137,7 +137,7 @@ namespace GymFitnessGuide.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("GymFitnessGuide.Infrastructure.Entities.UserCategory", b =>
@@ -152,7 +152,7 @@ namespace GymFitnessGuide.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("UserCategories");
+                    b.ToTable("UserCategories", (string)null);
                 });
 
             modelBuilder.Entity("GymFitnessGuide.Infrastructure.Entities.Recommendation", b =>

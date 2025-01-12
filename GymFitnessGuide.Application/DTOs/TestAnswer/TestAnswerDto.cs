@@ -3,7 +3,8 @@
     public class TestAnswerDto
     {
         public int Id { get; set; }
-        public required string AnswerText { get; set; }
-        public bool IsCorrect { get; set; }
+        public required string Answer { get; set; }
+        public int QuestionId { get; set; }
+        public int UserId { get; set; }
     }
 }

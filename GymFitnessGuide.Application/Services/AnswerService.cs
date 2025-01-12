@@ -27,10 +27,11 @@ namespace GymFitnessGuide.Application.Services
             return _mapper.Map<TestAnswerDto>(answer);
         }
 
-        public async Task<bool> CreateTestAnswerAsync(TestAnswerCreateDto createTestAnswerDto)
+        public async Task<TestAnswerDto> CreateTestAnswerAsync(TestAnswerCreateDto createTestAnswerDto)
         {
             var answer = _mapper.Map<TestAnswer>(createTestAnswerDto);
-            return await _testAnswerRepository.AddAsync(answer);
+            await _testAnswerRepository.AddAsync(answer);
+            return _mapper.Map<TestAnswerDto>(answer);
         }
 
         public async Task<IEnumerable<RecommendationDto>> GetRecommendationsBasedOnTestAsync(int userId)
@@ -46,13 +47,7 @@ namespace GymFitnessGuide.Application.Services
             await _userRepository.UpdateAsync(user);
 
             var recommendations = await _recommendationRepository.GetByCategoryIdAsync(categoryId);
-            return recommendations.Select(r => new RecommendationDto
-            {
-                Id = r.Id,
-                Title = r.Title,
-                Description = r.Description,
-                Url = r.Url
-            });
+            return _mapper.Map<IEnumerable<RecommendationDto>>(recommendations);
         }
 
         public async Task<bool> UpdateTestAnswerAsync(int id, TestAnswerUpdateDto updateTestAnswerDto)

@@ -1,11 +1,8 @@
-﻿using GymFitnessGuide.Application.DTOs.TestAnswer;
-
-namespace GymFitnessGuide.Application.DTOs.TestQuestion
+﻿namespace GymFitnessGuide.Application.DTOs.TestQuestion
 {
     public class TestQuestionUpdateDto
     {
-        public required string QuestionText { get; set; }
-        public List<TestAnswerUpdateDto> Answers { get; set; } = null!;
+        public required string Question { get; set; }
 
         public int CategoryId { get; set; }
     }

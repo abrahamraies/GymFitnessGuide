@@ -31,26 +31,30 @@ namespace GymFitnessGuide.Infrastructure.Repositories
             return await _context.Recommendations.FindAsync(id);
         }
 
-        public async Task AddAsync(Recommendation recommendation)
+        public async Task<bool> AddAsync(Recommendation recommendation)
         {
             await _context.Recommendations.AddAsync(recommendation);
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task UpdateAsync(Recommendation recommendation)
+        public async Task<bool> UpdateAsync(Recommendation recommendation)
         {
             _context.Recommendations.Update(recommendation);
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var recommendation = await GetByIdAsync(id);
             if (recommendation != null)
             {
                 _context.Recommendations.Remove(recommendation);
                 await _context.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
     }
 }

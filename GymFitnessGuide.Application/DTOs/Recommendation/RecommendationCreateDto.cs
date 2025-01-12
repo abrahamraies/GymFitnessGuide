@@ -1,6 +1,6 @@
 ﻿namespace GymFitnessGuide.Application.DTOs.Recommendation
 {
-    public class UpdateRecommendationDto
+    public class RecommendationCreateDto
     {
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

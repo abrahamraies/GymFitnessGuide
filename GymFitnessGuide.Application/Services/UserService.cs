@@ -23,17 +23,16 @@ namespace GymFitnessGuide.Application.Services
             return _mapper.Map<UserDto>(user);
         }
 
-        public async Task<User> CreateUserAsync(UserCreateDto createUserDto)
+        public async Task<UserDto> CreateUserAsync(UserCreateDto createUserDto)
         {
             var user = _mapper.Map<User>(createUserDto);
             await _userRepository.AddAsync(user);
-            return user;
+            return _mapper.Map<UserDto>(user);
         }
 
         public async Task<bool> UpdateUserAsync(int id, UserUpdateDto updateUserDto)
         {
-            var user = await _userRepository.GetByIdAsync(id);
-            if (user == null) return false;
+            var user = await _userRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException("User not found.");
 
             _mapper.Map(updateUserDto, user);
             return await _userRepository.UpdateAsync(user);
