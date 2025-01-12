@@ -5,14 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymFitnessGuide.Infrastructure.Repositories
 {
-    public class RecommendationRepository : IRecommendationRepository
+    public class RecommendationRepository(AppDbContext context) : IRecommendationRepository
     {
-        private readonly AppDbContext _context;
-
-        public RecommendationRepository(AppDbContext context)
-        {
-            _context = context;
-        }
+        private readonly AppDbContext _context = context;
 
         public async Task<IEnumerable<Recommendation>> GetAllAsync()
         {

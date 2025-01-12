@@ -16,23 +16,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     ));
 
 //Repositories
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IRecommendationRepository, RecommendationRepository>();
-builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
+RegisterRepositories(builder.Services);
 
 // Services
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IRecommendationService, RecommendationService>();
-builder.Services.AddScoped<IQuestionService, QuestionService>();
-builder.Services.AddScoped<IAnswerService, AnswerService>();
+RegisterServices(builder.Services);
 
 // AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-// CORS
+// CORS - Tengo que agrgear la url del frontend aca una vez que tenga el sitio deployado.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -57,9 +49,27 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
 app.UseCors("AllowAll");
+app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+#region Methods for registering services and repositories
+void RegisterRepositories(IServiceCollection services)
+{
+    services.AddScoped<IAnswerRepository, AnswerRepository>();
+    services.AddScoped<ICategoryRepository, CategoryRepository>();
+    services.AddScoped<IQuestionRepository, QuestionRepository>();
+    services.AddScoped<IRecommendationRepository, RecommendationRepository>();
+    services.AddScoped<IUserRepository, UserRepository>();
+}
+
+void RegisterServices(IServiceCollection services)
+{
+    services.AddScoped<IAnswerService, AnswerService>();
+    services.AddScoped<ICategoryService, CategoryService>();
+    services.AddScoped<IQuestionService, QuestionService>();
+    services.AddScoped<IRecommendationService, RecommendationService>();
+    services.AddScoped<IUserService, UserService>();
+}
+#endregion

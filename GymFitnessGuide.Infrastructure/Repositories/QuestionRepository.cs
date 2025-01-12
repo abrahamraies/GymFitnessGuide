@@ -9,13 +9,6 @@ namespace GymFitnessGuide.Infrastructure.Repositories
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<bool> AddAsync(TestQuestion question)
-        {
-            await _context.TestQuestions.AddAsync(question);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
         public async Task<IEnumerable<TestQuestion>> GetAllAsync()
         {
             return await _context.TestQuestions.ToListAsync();
@@ -31,6 +24,13 @@ namespace GymFitnessGuide.Infrastructure.Repositories
             return await _context.TestQuestions
                                  .Where(q => q.CategoryId == categoryId)
                                  .ToListAsync();
+        }
+
+        public async Task<bool> AddAsync(TestQuestion question)
+        {
+            await _context.TestQuestions.AddAsync(question);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> UpdateAsync(TestQuestion question)

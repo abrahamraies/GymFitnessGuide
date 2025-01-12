@@ -5,12 +5,12 @@ namespace GymFitnessGuide.Infrastructure.Data
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
-        public DbSet<User> Users { get; set; } = null!;
         public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
         public DbSet<UserCategory> UserCategories { get; set; } = null!;
-        public DbSet<TestQuestion> TestQuestions { get; set; } = null!;
-        public DbSet<TestAnswer> TestAnswers { get; set; } = null!;
         public DbSet<Recommendation> Recommendations { get; set; } = null!;
+        public DbSet<TestAnswer> TestAnswers { get; set; } = null!;
+        public DbSet<TestQuestion> TestQuestions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

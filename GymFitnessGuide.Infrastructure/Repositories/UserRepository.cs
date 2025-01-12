@@ -5,21 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymFitnessGuide.Infrastructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(AppDbContext context) : IUserRepository
     {
-        private readonly AppDbContext _context;
-
-        public UserRepository(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<bool> AddAsync(User user)
-        {
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return true;
-        }
+        private readonly AppDbContext _context = context;
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
@@ -29,6 +17,13 @@ namespace GymFitnessGuide.Infrastructure.Repositories
         public async Task<User?> GetByIdAsync(int id)
         {
             return await _context.Users.FindAsync(id);
+        }
+
+        public async Task<bool> AddAsync(User user)
+        {
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> UpdateAsync(User user)
