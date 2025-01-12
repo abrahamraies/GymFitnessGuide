@@ -29,7 +29,7 @@ namespace GymFitnessGuide.API.Controllers
         public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDto newCategory)
         {
             var createdCategory = await _categoryService.CreateCategoryAsync(newCategory);
-            return CreatedAtAction(nameof(GetCategoryById), createdCategory);
+            return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.Id}, newCategory);
         }
 
         [HttpPut("{id}")]

@@ -29,7 +29,7 @@ namespace GymFitnessGuide.API.Controllers
         public async Task<IActionResult> CreateTestQuestion([FromBody] TestQuestionCreateDto newQuestion)
         {
             var createdQuestion = await _testQuestionService.CreateTestQuestionAsync(newQuestion);
-            return CreatedAtAction(nameof(GetTestQuestionById), createdQuestion);
+            return CreatedAtAction(nameof(GetTestQuestionById), new { id = createdQuestion.Id }, newQuestion);
         }
 
         [HttpPut("{id}")]

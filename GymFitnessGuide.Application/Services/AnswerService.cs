@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GymFitnessGuide.Application.DTOs.Recommendation;
 using GymFitnessGuide.Application.DTOs.TestAnswer;
 using GymFitnessGuide.Application.Interfaces;
 using GymFitnessGuide.Infrastructure.Entities;
@@ -6,9 +7,12 @@ using GymFitnessGuide.Infrastructure.Repositories.Interfaces;
 
 namespace GymFitnessGuide.Application.Services
 {
-    public class AnswerService(IAnswerRepository testAnswerRepository, IMapper mapper) : IAnswerService
+    public class AnswerService(IAnswerRepository testAnswerRepository, IUserRepository userRepository, IRecommendationRepository recommendationRepository, IQuestionRepository testQuestionRepository, IMapper mapper) : IAnswerService
     {
         private readonly IAnswerRepository _testAnswerRepository = testAnswerRepository;
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IRecommendationRepository _recommendationRepository = recommendationRepository;
+        private readonly IQuestionRepository _testQuestionRepository = testQuestionRepository;
         private readonly IMapper _mapper = mapper;
 
         public async Task<IEnumerable<TestAnswerDto>> GetAllTestAnswersAsync()
@@ -29,6 +33,28 @@ namespace GymFitnessGuide.Application.Services
             return await _testAnswerRepository.AddAsync(answer);
         }
 
+        public async Task<IEnumerable<RecommendationDto>> GetRecommendationsBasedOnTestAsync(int userId)
+        {
+            var userAnswers = await _testAnswerRepository.GetAnswersByUserIdAsync(userId);
+
+            var categoryId = await CalculateCategoryBasedOnAnswersAsync(userAnswers);
+
+            var user = await _userRepository.GetByIdAsync(userId) ?? throw new KeyNotFoundException("User not found.");
+
+            user.UserCategories.Clear();
+            user.UserCategories.Add(new UserCategory { UserId = userId, CategoryId = categoryId });
+            await _userRepository.UpdateAsync(user);
+
+            var recommendations = await _recommendationRepository.GetByCategoryIdAsync(categoryId);
+            return recommendations.Select(r => new RecommendationDto
+            {
+                Id = r.Id,
+                Title = r.Title,
+                Description = r.Description,
+                Url = r.Url
+            });
+        }
+
         public async Task<bool> UpdateTestAnswerAsync(int id, TestAnswerUpdateDto updateTestAnswerDto)
         {
             var answer = await _testAnswerRepository.GetByIdAsync(id);
@@ -41,6 +67,30 @@ namespace GymFitnessGuide.Application.Services
         public async Task<bool> DeleteTestAnswerAsync(int id)
         {
             return await _testAnswerRepository.DeleteAsync(id);
+        }
+
+        private async Task<int> CalculateCategoryBasedOnAnswersAsync(IEnumerable<TestAnswer> answers)
+        {
+            var categoryScores = new Dictionary<int, int>();
+
+            foreach (var answer in answers)
+            {
+                var question = await _testQuestionRepository.GetByIdAsync(answer.QuestionId);
+                if (question == null) continue;
+
+                if (categoryScores.ContainsKey(question.CategoryId))
+                {
+                    categoryScores[question.CategoryId]++;
+                }
+                else
+                {
+                    categoryScores[question.CategoryId] = 1;
+                }
+            }
+
+            return categoryScores.OrderByDescending(cs => cs.Value)
+                                 .FirstOrDefault()
+                                 .Key;
         }
     }
 }

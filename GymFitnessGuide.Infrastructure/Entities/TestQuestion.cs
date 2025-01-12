@@ -6,5 +6,8 @@
         public string Question { get; set; } = string.Empty;
 
         public ICollection<TestAnswer> TestAnswers { get; set; } = [];
+
+        public int CategoryId { get; set; }
+        public Category Category { get; set; } = null!;
     }
 }

@@ -1,4 +1,5 @@
-﻿using GymFitnessGuide.Application.DTOs.TestAnswer;
+﻿using GymFitnessGuide.Application.DTOs.Recommendation;
+using GymFitnessGuide.Application.DTOs.TestAnswer;
 
 namespace GymFitnessGuide.Application.Interfaces
 {
@@ -7,6 +8,7 @@ namespace GymFitnessGuide.Application.Interfaces
         Task<IEnumerable<TestAnswerDto>> GetAllTestAnswersAsync();
         Task<TestAnswerDto?> GetTestAnswerByIdAsync(int id);
         Task<bool> CreateTestAnswerAsync(TestAnswerCreateDto createTestAnswerDto);
+        Task<IEnumerable<RecommendationDto>> GetRecommendationsBasedOnTestAsync(int userId);
         Task<bool> UpdateTestAnswerAsync(int id, TestAnswerUpdateDto updateTestAnswerDto);
         Task<bool> DeleteTestAnswerAsync(int id);
     }

@@ -26,6 +26,13 @@ namespace GymFitnessGuide.Infrastructure.Repositories
             return await _context.TestQuestions.FindAsync(id);
         }
 
+        public async Task<IEnumerable<TestQuestion>> GetByCategoryIdAsync(int categoryId)
+        {
+            return await _context.TestQuestions
+                                 .Where(q => q.CategoryId == categoryId)
+                                 .ToListAsync();
+        }
+
         public async Task<bool> UpdateAsync(TestQuestion question)
         {
             _context.TestQuestions.Update(question);

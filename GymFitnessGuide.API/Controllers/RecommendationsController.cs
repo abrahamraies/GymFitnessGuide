@@ -6,14 +6,9 @@ namespace GymFitnessGuide.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RecommendationsController : ControllerBase
+    public class RecommendationsController(IRecommendationService recommendationService) : ControllerBase
     {
-        private readonly IRecommendationService _recommendationService;
-
-        public RecommendationsController(IRecommendationService recommendationService)
-        {
-            _recommendationService = recommendationService;
-        }
+        private readonly IRecommendationService _recommendationService = recommendationService;
 
         [HttpGet("category/{categoryId}")]
         public async Task<IActionResult> GetByCategory(int categoryId)

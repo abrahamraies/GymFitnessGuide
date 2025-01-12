@@ -7,5 +7,7 @@ namespace GymFitnessGuide.Application.DTOs.TestQuestion
         public int Id { get; set; }
         public required string QuestionText { get; set; }
         public List<TestAnswerDto> Answers { get; set; } = null!;
+
+        public int CategoryId { get; set; }
     }
 }

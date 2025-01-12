@@ -32,6 +32,20 @@ namespace GymFitnessGuide.API.Controllers
             return CreatedAtAction(nameof(GetTestAnswerById), createdAnswer);
         }
 
+        [HttpPost("{userId}/process")]
+        public async Task<IActionResult> ProcessTestAndGetRecommendations(int userId)
+        {
+            try
+            {
+                var recommendations = await _testAnswerService.GetRecommendationsBasedOnTestAsync(userId);
+                return Ok(recommendations);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTestAnswer(int id, [FromBody] TestAnswerUpdateDto updatedAnswer)
         {

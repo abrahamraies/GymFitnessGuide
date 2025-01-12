@@ -23,10 +23,11 @@ namespace GymFitnessGuide.Application.Services
             return _mapper.Map<CategoryDto>(category);
         }
 
-        public async Task<bool> CreateCategoryAsync(CategoryCreateDto createCategoryDto)
+        public async Task<Category> CreateCategoryAsync(CategoryCreateDto createCategoryDto)
         {
             var category = _mapper.Map<Category>(createCategoryDto);
-            return await _categoryRepository.AddAsync(category);
+            await _categoryRepository.AddAsync(category);
+            return category;
         }
 
         public async Task<bool> UpdateCategoryAsync(int id, CategoryUpdateDto updateCategoryDto)
