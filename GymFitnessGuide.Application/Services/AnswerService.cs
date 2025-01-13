@@ -7,12 +7,11 @@ using GymFitnessGuide.Infrastructure.Repositories.Interfaces;
 
 namespace GymFitnessGuide.Application.Services
 {
-    public class AnswerService(IAnswerRepository testAnswerRepository, IUserRepository userRepository, IRecommendationRepository recommendationRepository, IQuestionRepository testQuestionRepository, IMapper mapper) : IAnswerService
+    public class AnswerService(IAnswerRepository testAnswerRepository, IUserRepository userRepository, IRecommendationRepository recommendationRepository, IMapper mapper) : IAnswerService
     {
         private readonly IAnswerRepository _testAnswerRepository = testAnswerRepository;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IRecommendationRepository _recommendationRepository = recommendationRepository;
-        private readonly IQuestionRepository _testQuestionRepository = testQuestionRepository;
         private readonly IMapper _mapper = mapper;
 
         public async Task<IEnumerable<TestAnswerDto>> GetAllTestAnswersAsync()
@@ -38,7 +37,10 @@ namespace GymFitnessGuide.Application.Services
         {
             var userAnswers = await _testAnswerRepository.GetAnswersByUserIdAsync(userId);
 
-            var categoryId = await CalculateCategoryBasedOnAnswersAsync(userAnswers);
+            if (userAnswers == null || !userAnswers.Any())
+                throw new InvalidOperationException("No answers found for the user.");
+
+            var categoryId = CalculateCategoryBasedOnAnswers(userAnswers);
 
             var user = await _userRepository.GetByIdAsync(userId) ?? throw new KeyNotFoundException("User not found.");
 
@@ -64,28 +66,27 @@ namespace GymFitnessGuide.Application.Services
             return await _testAnswerRepository.DeleteAsync(id);
         }
 
-        private async Task<int> CalculateCategoryBasedOnAnswersAsync(IEnumerable<TestAnswer> answers)
+        private int CalculateCategoryBasedOnAnswers(IEnumerable<TestAnswer> answers)
         {
             var categoryScores = new Dictionary<int, int>();
 
             foreach (var answer in answers)
             {
-                var question = await _testQuestionRepository.GetByIdAsync(answer.QuestionId);
-                if (question == null) continue;
-
-                if (categoryScores.ContainsKey(question.CategoryId))
+                if (answer.Answer.HasValue && answer.Answer.Value)
                 {
-                    categoryScores[question.CategoryId]++;
+                    var categoryId = answer.Question.CategoryId;
+                    if (categoryId != 0)
+                        categoryScores[categoryId] = categoryScores.GetValueOrDefault(categoryId) + 1;
                 }
-                else
+                else if (answer.SelectedOption != null)
                 {
-                    categoryScores[question.CategoryId] = 1;
+                    var categoryId = answer.SelectedOption.CategoryId;
+                    categoryScores[categoryId] = categoryScores.GetValueOrDefault(categoryId) + 1;
                 }
             }
 
-            return categoryScores.OrderByDescending(cs => cs.Value)
-                                 .FirstOrDefault()
-                                 .Key;
+            var maxCategoryId = categoryScores.OrderByDescending(kv => kv.Value).FirstOrDefault().Key;
+            return maxCategoryId;
         }
     }
 }

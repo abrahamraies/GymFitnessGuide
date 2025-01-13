@@ -11,6 +11,7 @@ namespace GymFitnessGuide.Infrastructure.Data
         public DbSet<Recommendation> Recommendations { get; set; } = null!;
         public DbSet<TestAnswer> TestAnswers { get; set; } = null!;
         public DbSet<TestQuestion> TestQuestions { get; set; } = null!;
+        public DbSet<QuestionOption> QuestionOptions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,12 +25,29 @@ namespace GymFitnessGuide.Infrastructure.Data
                 .HasForeignKey(up => up.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
             modelBuilder.Entity<UserCategory>()
                 .HasOne(up => up.Category)
                 .WithMany(p => p.UserCategories)
                 .HasForeignKey(up => up.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // One-to-Many TestQuestion y QuestionOption
+            modelBuilder.Entity<QuestionOption>()
+                .HasOne(qo => qo.Question)
+                .WithMany(q => q.Options)
+                .HasForeignKey(qo => qo.QuestionId);
+
+            // One-to-Many QuestionOption y Category
+            modelBuilder.Entity<QuestionOption>()
+                .HasOne(qo => qo.Category)
+                .WithMany()
+                .HasForeignKey(qo => qo.CategoryId);
+
+            // Many-to-One TestAnswer y QuestionOption
+            modelBuilder.Entity<TestAnswer>()
+                .HasOne(ta => ta.SelectedOption)
+                .WithMany()
+                .HasForeignKey(ta => ta.SelectedOptionId);
 
             // One-to-Many Category and TestQuestion
             modelBuilder.Entity<TestQuestion>()
