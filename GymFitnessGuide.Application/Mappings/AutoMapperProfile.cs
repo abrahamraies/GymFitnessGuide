@@ -14,23 +14,28 @@ namespace GymFitnessGuide.Application.Mappings
         {
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<User, UserCreateDto>().ReverseMap();
-            CreateMap<User, UserUpdateDto>().ReverseMap();
+            CreateMap<User, UserUpdateDto>().ReverseMap()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Category, CategoryCreateDto>().ReverseMap();
-            CreateMap<Category, CategoryUpdateDto>().ReverseMap();
+            CreateMap<Category, CategoryUpdateDto>().ReverseMap()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<TestQuestion, TestQuestionDto>().ReverseMap();
             CreateMap<TestQuestion, TestQuestionCreateDto>().ReverseMap();
-            CreateMap<TestQuestion, TestQuestionUpdateDto>().ReverseMap();
+            CreateMap<TestQuestion, TestQuestionUpdateDto>().ReverseMap()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<TestAnswer, TestAnswerDto>().ReverseMap();
             CreateMap<TestAnswer, TestAnswerCreateDto>().ReverseMap();
-            CreateMap<TestAnswer, TestAnswerUpdateDto>().ReverseMap();
+            CreateMap<TestAnswer, TestAnswerUpdateDto>().ReverseMap()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<Recommendation, RecommendationDto>().ReverseMap();
             CreateMap<Recommendation, RecommendationCreateDto>().ReverseMap();
-            CreateMap<Recommendation, RecommendationUpdateDto>().ReverseMap();
+            CreateMap<Recommendation, RecommendationUpdateDto>().ReverseMap()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

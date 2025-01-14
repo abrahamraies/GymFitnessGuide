@@ -36,7 +36,7 @@ namespace GymFitnessGuide.API.Controllers
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUpdateDto user)
         {
             var updatedUser = await _userService.UpdateUserAsync(id, user);
-            if (updatedUser) return NotFound();
+            if (!updatedUser) return NotFound();
             return Ok(updatedUser);
         }
 
