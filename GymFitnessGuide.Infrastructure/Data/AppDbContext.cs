@@ -35,7 +35,8 @@ namespace GymFitnessGuide.Infrastructure.Data
             modelBuilder.Entity<QuestionOption>()
                 .HasOne(qo => qo.Question)
                 .WithMany(q => q.Options)
-                .HasForeignKey(qo => qo.QuestionId);
+                .HasForeignKey(qo => qo.QuestionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // One-to-Many QuestionOption y Category
             modelBuilder.Entity<QuestionOption>()

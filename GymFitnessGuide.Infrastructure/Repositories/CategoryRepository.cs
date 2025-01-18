@@ -9,6 +9,11 @@ namespace GymFitnessGuide.Infrastructure.Repositories
     {
         private readonly AppDbContext _context = context;
 
+        public async Task<bool> ExistsAsync(int categoryId)
+        {
+            return await _context.Categories.AnyAsync(c => c.Id == categoryId);
+        }
+
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await _context.Categories.ToListAsync();

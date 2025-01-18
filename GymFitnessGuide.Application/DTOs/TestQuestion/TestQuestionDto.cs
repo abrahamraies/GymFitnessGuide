@@ -6,10 +6,10 @@ namespace GymFitnessGuide.Application.DTOs.TestQuestion
     {
         public int Id { get; set; }
         public required string Question { get; set; }
-        public bool IsBinary { get; set; }
+        public bool IsOpen { get; set; }
 
         public int CategoryId { get; set; }
-        public ICollection<QuestionOptionDto> Options { get; set; } = new List<QuestionOptionDto>();
+        public ICollection<QuestionOptionDto> Options { get; set; } = [];
 
     }
 }

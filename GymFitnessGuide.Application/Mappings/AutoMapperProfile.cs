@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GymFitnessGuide.Application.DTOs.Category;
+using GymFitnessGuide.Application.DTOs.QuestionOption;
 using GymFitnessGuide.Application.DTOs.Recommendation;
 using GymFitnessGuide.Application.DTOs.TestAnswer;
 using GymFitnessGuide.Application.DTOs.TestQuestion;
@@ -22,9 +23,15 @@ namespace GymFitnessGuide.Application.Mappings
             CreateMap<Category, CategoryUpdateDto>().ReverseMap()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
-            CreateMap<TestQuestion, TestQuestionDto>().ReverseMap();
-            CreateMap<TestQuestion, TestQuestionCreateDto>().ReverseMap();
+                CreateMap<TestQuestion, TestQuestionDto>()
+                .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Options));
+            CreateMap<TestQuestion, TestQuestionCreateDto>().ReverseMap()
+                .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Options ?? new List<QuestionOptionCreateDto>()));
             CreateMap<TestQuestion, TestQuestionUpdateDto>().ReverseMap()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<QuestionOptionCreateDto, QuestionOption>().ReverseMap();
+            CreateMap<QuestionOption, QuestionOptionDto>().ReverseMap()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<TestAnswer, TestAnswerDto>().ReverseMap();

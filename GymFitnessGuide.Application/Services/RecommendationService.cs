@@ -6,9 +6,10 @@ using GymFitnessGuide.Infrastructure.Repositories.Interfaces;
 
 namespace GymFitnessGuide.Application.Services
 {
-    public class RecommendationService(IRecommendationRepository recommendationRepository, IMapper mapper) : IRecommendationService
+    public class RecommendationService(IRecommendationRepository recommendationRepository, ICategoryRepository categoryRepository, IMapper mapper) : IRecommendationService
     {
         private readonly IRecommendationRepository _recommendationRepository = recommendationRepository;
+        private readonly ICategoryRepository _categoryRepository = categoryRepository;
         private readonly IMapper _mapper = mapper;
 
         public async Task<IEnumerable<RecommendationDto>> GetAllRecommendationsAsync()
@@ -40,6 +41,17 @@ namespace GymFitnessGuide.Application.Services
         public async Task<bool> UpdateRecommendationAsync(int id, RecommendationUpdateDto updateRecommendationDto)
         {
             var recommendation = await _recommendationRepository.GetByIdAsync(id) ?? throw new KeyNotFoundException("Recommendation not found.");
+
+            if (updateRecommendationDto.CategoryId.HasValue)
+            {
+                var categoryExists = await _categoryRepository.ExistsAsync(updateRecommendationDto.CategoryId.Value);
+                if (!categoryExists)
+                {
+                    throw new ArgumentException("The provided category does not exist.");
+                }
+
+                recommendation.CategoryId = updateRecommendationDto.CategoryId.Value;
+            }
 
             _mapper.Map(updateRecommendationDto, recommendation);
             return await _recommendationRepository.UpdateAsync(recommendation);

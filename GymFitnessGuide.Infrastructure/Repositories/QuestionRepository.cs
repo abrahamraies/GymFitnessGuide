@@ -11,12 +11,16 @@ namespace GymFitnessGuide.Infrastructure.Repositories
 
         public async Task<IEnumerable<TestQuestion>> GetAllAsync()
         {
-            return await _context.TestQuestions.ToListAsync();
+            return await _context.TestQuestions
+                .Include(q => q.Options)
+                .ToListAsync();
         }
 
         public async Task<TestQuestion?> GetByIdAsync(int id)
         {
-            return await _context.TestQuestions.FindAsync(id);
+            return await _context.TestQuestions
+                .Include(q => q.Options)
+                .FirstOrDefaultAsync(q => q.Id == id);
         }
 
         public async Task<IEnumerable<TestQuestion>> GetByCategoryIdAsync(int categoryId)

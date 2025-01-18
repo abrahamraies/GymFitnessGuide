@@ -46,6 +46,7 @@ namespace GymFitnessGuide.API.Controllers
             try
             {
                 var updatedRecommendation = await _recommendationService.UpdateRecommendationAsync(id, recommendation);
+
                 if(updatedRecommendation) return NoContent();
                 return Ok(updatedRecommendation);
             }

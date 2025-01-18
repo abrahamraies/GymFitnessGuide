@@ -23,7 +23,9 @@ namespace GymFitnessGuide.Infrastructure.Repositories
 
         public async Task<Recommendation?> GetByIdAsync(int id)
         {
-            return await _context.Recommendations.FindAsync(id);
+            return await _context.Recommendations
+                .Include(r => r.Category) 
+                .FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task<bool> AddAsync(Recommendation recommendation)
