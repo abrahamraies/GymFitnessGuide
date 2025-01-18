@@ -49,14 +49,6 @@ namespace GymFitnessGuide.Application.Services
             var question = _mapper.Map<TestQuestion>(createTestQuestionDto);
             question.Category = category;
 
-            if (question.IsOpen.Value && createTestQuestionDto.Options != null)
-            {
-                foreach (var option in question.Options)
-                {
-                    option.CategoryId = createTestQuestionDto.CategoryId;
-                }
-            }
-
             await _testQuestionRepository.AddAsync(question);
             return question;
         }

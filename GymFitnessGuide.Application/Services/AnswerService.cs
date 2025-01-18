@@ -7,11 +7,12 @@ using GymFitnessGuide.Infrastructure.Repositories.Interfaces;
 
 namespace GymFitnessGuide.Application.Services
 {
-    public class AnswerService(IAnswerRepository testAnswerRepository, IUserRepository userRepository, IRecommendationRepository recommendationRepository, IMapper mapper) : IAnswerService
+    public class AnswerService(IAnswerRepository testAnswerRepository, IUserRepository userRepository, IRecommendationRepository recommendationRepository,IQuestionRepository questionRepository, IMapper mapper) : IAnswerService
     {
         private readonly IAnswerRepository _testAnswerRepository = testAnswerRepository;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IRecommendationRepository _recommendationRepository = recommendationRepository;
+        private readonly IQuestionRepository _questionRepository = questionRepository;
         private readonly IMapper _mapper = mapper;
 
         public async Task<IEnumerable<TestAnswerDto>> GetAllTestAnswersAsync()
@@ -78,9 +79,18 @@ namespace GymFitnessGuide.Application.Services
                     if (categoryId != 0)
                         categoryScores[categoryId] = categoryScores.GetValueOrDefault(categoryId) + 1;
                 }
-                else if (answer.SelectedOption != null)
+                else if (answer.SelectedOptionId != null)
                 {
-                    var categoryId = answer.SelectedOption.CategoryId;
+                    var options = _questionRepository.GetByIdAsync(answer.QuestionId).Result.Options;
+                    
+                    var selectedOption = options.FirstOrDefault(o => o.Id == answer.SelectedOptionId);
+
+                    if (selectedOption == null)
+                    {
+                        throw new KeyNotFoundException($"Option with ID {answer.SelectedOptionId} not found in question {answer.QuestionId}.");
+                    }
+
+                    var categoryId = selectedOption.CategoryId;
                     categoryScores[categoryId] = categoryScores.GetValueOrDefault(categoryId) + 1;
                 }
             }

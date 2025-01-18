@@ -38,7 +38,7 @@ namespace GymFitnessGuide.API.Controllers
             try
             {
                 var recommendations = await _testAnswerService.GetRecommendationsBasedOnTestAsync(userId);
-                return Ok(recommendations);
+                return Ok(recommendations); //hay que ver porq mierda retorna vacio.
             }
             catch (Exception ex)
             {
