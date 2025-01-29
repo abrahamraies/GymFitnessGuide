@@ -6,6 +6,7 @@ namespace GymFitnessGuide.Infrastructure.Repositories.Interfaces
     {
         Task<IEnumerable<User>> GetAllAsync();
         Task<User?> GetByIdAsync(int id);
+        Task<User?> GetByEmailAsync(string email);
         Task<bool> AddAsync(User user);
         Task<bool> UpdateAsync(User user);
     }

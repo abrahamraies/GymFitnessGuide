@@ -1,6 +1,7 @@
 ﻿using GymFitnessGuide.Application.DTOs.TestQuestion;
 using GymFitnessGuide.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymFitnessGuide.API.Controllers
 {
@@ -23,6 +24,27 @@ namespace GymFitnessGuide.API.Controllers
             var question = await _testQuestionService.GetTestQuestionByIdAsync(id);
             if (question == null) return NotFound();
             return Ok(question);
+        }
+
+        [HttpGet("random")]
+        public async Task<IActionResult> GetRandomQuestions([FromQuery] int count = 10)
+        {
+            var questions = await _testQuestionService.GetRandomTestQuestions(count);
+
+            if (questions == null || !questions.Any())
+            {
+                return NotFound("No questions available.");
+            }
+
+            var response = questions.Select(q => new
+            {
+                q.Id,
+                q.Question,
+                q.IsOpen,
+                Options = q.IsOpen ? q.Options.Select(o => new { o.Id, o.Text }) : null
+            });
+
+            return Ok(response);
         }
 
         [HttpPost]

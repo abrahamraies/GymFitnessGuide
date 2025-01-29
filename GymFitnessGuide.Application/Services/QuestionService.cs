@@ -31,6 +31,12 @@ namespace GymFitnessGuide.Application.Services
             return _mapper.Map<IEnumerable<TestQuestionDto>>(question);
         }
 
+        public async Task<IEnumerable<TestQuestionDto>> GetRandomTestQuestions(int count)
+        {
+            var question = await _testQuestionRepository.GetRandomQuestions(count);
+            return _mapper.Map<IEnumerable<TestQuestionDto>>(question);
+        }
+
         public async Task<TestQuestion> CreateTestQuestionAsync(TestQuestionCreateDto createTestQuestionDto)
         {
             if ((createTestQuestionDto.IsOpen == null || createTestQuestionDto.IsOpen == false) && (createTestQuestionDto.Options != null && createTestQuestionDto.Options.Count != 0))

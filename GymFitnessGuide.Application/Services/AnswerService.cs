@@ -46,9 +46,13 @@ namespace GymFitnessGuide.Application.Services
 
             var user = await _userRepository.GetByIdAsync(userId) ?? throw new KeyNotFoundException("User not found.");
 
-            user.UserCategories.Clear();
-            user.UserCategories.Add(new UserCategory { UserId = userId, CategoryId = categoryId });
-            await _userRepository.UpdateAsync(user);
+            var existingCategory = user.UserCategories.FirstOrDefault(uc => uc.CategoryId == categoryId);
+
+            if (existingCategory == null)
+            {
+                user.UserCategories.Add(new UserCategory { UserId = userId, CategoryId = categoryId });
+                await _userRepository.UpdateAsync(user);
+            }
 
             var recommendations = await _recommendationRepository.GetByCategoryIdAsync(categoryId);
             return _mapper.Map<IEnumerable<RecommendationDto>>(recommendations);

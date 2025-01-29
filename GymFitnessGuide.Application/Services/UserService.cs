@@ -23,6 +23,12 @@ namespace GymFitnessGuide.Application.Services
             return _mapper.Map<UserDto>(user);
         }
 
+        public async Task<UserDto?> GetUserByEmailAsync(string email)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            return _mapper.Map<UserDto>(user);
+        }
+
         public async Task<UserDto> CreateUserAsync(UserCreateDto createUserDto)
         {
             var user = _mapper.Map<User>(createUserDto);

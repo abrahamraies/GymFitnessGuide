@@ -25,6 +25,22 @@ namespace GymFitnessGuide.API.Controllers
             return Ok(user);
         }
 
+        [HttpPost("GetOrCreate")]
+        public async Task<IActionResult> GetOrCreateUser([FromBody] UserDto userDto)
+        {
+            var user = await _userService.GetUserByEmailAsync(userDto.Email);
+
+            if (user != null)
+            {
+                return Ok(user.Id);
+            }
+
+            var createUser = new UserCreateDto() { Name = userDto.Name, Email = userDto.Email };
+
+            var newUser = await _userService.CreateUserAsync(createUser);
+            return Ok(newUser.Id);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCreateDto newUser)
         {

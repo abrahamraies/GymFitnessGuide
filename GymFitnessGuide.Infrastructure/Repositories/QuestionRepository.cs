@@ -26,8 +26,18 @@ namespace GymFitnessGuide.Infrastructure.Repositories
         public async Task<IEnumerable<TestQuestion>> GetByCategoryIdAsync(int categoryId)
         {
             return await _context.TestQuestions
-                                 .Where(q => q.CategoryId == categoryId)
-                                 .ToListAsync();
+                .Where(q => q.CategoryId == categoryId)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<TestQuestion>> GetRandomQuestions(int count)
+        {
+            return await _context.TestQuestions
+                .Include(q => q.Options)
+                .AsQueryable()
+                .OrderBy(q => EF.Functions.Random())
+                .Take(count)
+                .ToListAsync();
         }
 
         public async Task<bool> AddAsync(TestQuestion question)

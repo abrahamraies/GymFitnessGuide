@@ -24,6 +24,8 @@ namespace GymFitnessGuide.Infrastructure.Repositories
             return await _context.TestAnswers
                 .Include(a => a.Question)
                 .Where(a => a.UserId == userId)
+                .OrderByDescending(a => a.Id)
+                .Take(10)
                 .ToListAsync();
         }
 
