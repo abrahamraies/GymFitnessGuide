@@ -1,5 +1,8 @@
-﻿namespace GymFitnessGuide.Infrastructure.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GymFitnessGuide.Infrastructure.Entities
 {
+    [Table("usercategories")]
     public class UserCategory
     {
         public int UserId { get; set; }

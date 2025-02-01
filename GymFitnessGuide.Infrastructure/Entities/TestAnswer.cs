@@ -1,5 +1,8 @@
-﻿namespace GymFitnessGuide.Infrastructure.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GymFitnessGuide.Infrastructure.Entities
 {
+    [Table("testanswers")]
     public class TestAnswer
     {
         public int Id { get; set; }

@@ -48,6 +48,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// For alwaysData deployment
+var ip = Environment.GetEnvironmentVariable("IP") ?? "0.0.0.0";
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+
+app.Urls.Add($"http://{ip}:{port}");
+
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthorization();
