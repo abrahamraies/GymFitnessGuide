@@ -44,7 +44,7 @@ namespace GymFitnessGuide.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCreateDto newUser)
         {
-            var createdUser = await _userService.CreateUserAsync(newUser); //Agregar validacion en caso de que email ya exista.
+            var createdUser = await _userService.CreateUserAsync(newUser);
             return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, newUser);
         }
 
