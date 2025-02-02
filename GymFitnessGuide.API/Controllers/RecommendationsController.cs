@@ -1,7 +1,7 @@
 ﻿using GymFitnessGuide.Application.DTOs.Recommendation;
 using GymFitnessGuide.Application.Interfaces;
-using GymFitnessGuide.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace GymFitnessGuide.API.Controllers
 {
@@ -19,9 +19,20 @@ namespace GymFitnessGuide.API.Controllers
         }
 
         [HttpGet("category/{categoryId}")]
-        public async Task<IActionResult> GetByCategory(int categoryId)
+        public async Task<IActionResult> GetByCategory(int categoryId, [FromServices] IMemoryCache cache)
         {
-            var recommendations = await _recommendationService.GetRecommendationsByCategoryAsync(categoryId);
+            string cacheKey = "recommendations";
+
+            if (!cache.TryGetValue(cacheKey, out IEnumerable<RecommendationDto>? recommendations))
+            {
+                recommendations = await _recommendationService.GetRecommendationsByCategoryAsync(categoryId);
+
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+
+                cache.Set(cacheKey, recommendations, cacheOptions);
+            }
+
             return Ok(recommendations);
         }
 
@@ -47,7 +58,7 @@ namespace GymFitnessGuide.API.Controllers
             {
                 var updatedRecommendation = await _recommendationService.UpdateRecommendationAsync(id, recommendation);
 
-                if(updatedRecommendation) return NoContent();
+                if (updatedRecommendation) return NoContent();
                 return Ok(updatedRecommendation);
             }
             catch (KeyNotFoundException)

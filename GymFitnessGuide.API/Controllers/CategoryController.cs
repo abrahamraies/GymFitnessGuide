@@ -1,6 +1,7 @@
 ﻿using GymFitnessGuide.Application.DTOs.Category;
 using GymFitnessGuide.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace GymFitnessGuide.API.Controllers
 {
@@ -11,9 +12,20 @@ namespace GymFitnessGuide.API.Controllers
         private readonly ICategoryService _categoryService = categoryService;
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCategories()
+        public async Task<IActionResult> GetAllCategories([FromServices] IMemoryCache cache)
         {
-            var categories = await _categoryService.GetAllCategoriesAsync();
+            string cacheKey = "categories";
+
+            if (!cache.TryGetValue(cacheKey, out IEnumerable<CategoryDto>? categories))
+            {
+                categories = await _categoryService.GetAllCategoriesAsync();
+
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+
+                cache.Set(cacheKey, categories, cacheOptions);
+            }
+
             return Ok(categories);
         }
 
@@ -29,7 +41,7 @@ namespace GymFitnessGuide.API.Controllers
         public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDto newCategory)
         {
             var createdCategory = await _categoryService.CreateCategoryAsync(newCategory);
-            return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.Id}, newCategory);
+            return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.Id }, newCategory);
         }
 
         [HttpPut("{id}")]
