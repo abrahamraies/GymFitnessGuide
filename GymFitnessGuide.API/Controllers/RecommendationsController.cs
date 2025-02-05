@@ -21,7 +21,7 @@ namespace GymFitnessGuide.API.Controllers
         [HttpGet("category/{categoryId}")]
         public async Task<IActionResult> GetByCategory(int categoryId, [FromServices] IMemoryCache cache)
         {
-            string cacheKey = "recommendations";
+            string cacheKey = "recommendations_"+categoryId;
 
             if (!cache.TryGetValue(cacheKey, out IEnumerable<RecommendationDto>? recommendations))
             {
